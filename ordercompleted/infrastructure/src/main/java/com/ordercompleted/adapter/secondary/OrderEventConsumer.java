@@ -50,7 +50,7 @@ public class OrderEventConsumer implements OrderCompletedEventProcessor {
   }
   private void processOrderCompletedEvent(String message) {
     String orderId = extractOrderIdFromMessage(message);
-    completeOrderService.completeOrder(orderId);
+    //completeOrderService.completeOrder(orderId);
   }
   private String extractOrderIdFromMessage(String message) {
     return message.split(":")[1].trim();
