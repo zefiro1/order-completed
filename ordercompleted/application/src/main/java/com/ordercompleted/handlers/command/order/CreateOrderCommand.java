@@ -1,13 +1,10 @@
-package com.ordercompleted.handlers.query;
+package com.ordercompleted.handlers.command.order;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GetOrderQuery {
+public class CreateOrderCommand {
   private final String orderId;
-
-
 }
-

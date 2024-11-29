@@ -1,6 +1,7 @@
-package com.ordercompleted.handlers.query;
+package com.ordercompleted.handlers.query.product;
 
 import com.ordercompleted.domain.model.Product;
+import com.ordercompleted.handlers.query.QueryHandler;
 import com.ordercompleted.ports.secondary.ProductRepository;
 import lombok.AllArgsConstructor;
 

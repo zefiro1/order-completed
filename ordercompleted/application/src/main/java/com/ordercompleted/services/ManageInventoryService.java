@@ -2,11 +2,11 @@ package com.ordercompleted.services;
 
 import com.ordercompleted.dispatcher.CommandQueryBus;
 import com.ordercompleted.domain.model.Product;
-import com.ordercompleted.handlers.command.*;
-import com.ordercompleted.handlers.query.GetLowStockProductsQuery;
-import com.ordercompleted.handlers.query.GetLowStockProductsQueryHandler;
-import com.ordercompleted.handlers.query.GetProductQuery;
-import com.ordercompleted.handlers.query.GetProductQueryHandler;
+import com.ordercompleted.handlers.command.product.*;
+import com.ordercompleted.handlers.query.product.GetLowStockProductsQuery;
+import com.ordercompleted.handlers.query.product.GetLowStockProductsQueryHandler;
+import com.ordercompleted.handlers.query.product.GetProductQuery;
+import com.ordercompleted.handlers.query.product.GetProductQueryHandler;
 import com.ordercompleted.ports.primary.ManageInventoryUseCase;
 import com.ordercompleted.ports.secondary.ProductRepository;
 import lombok.AllArgsConstructor;

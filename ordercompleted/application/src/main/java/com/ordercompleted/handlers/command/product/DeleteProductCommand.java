@@ -1,10 +1,10 @@
-package com.ordercompleted.handlers.query;
+package com.ordercompleted.handlers.command.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GetProductQuery {
+public class DeleteProductCommand {
   private final String productId;
 }

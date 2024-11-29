@@ -1,4 +1,4 @@
-package com.ordercompleted.handlers.command;
+package com.ordercompleted.handlers.command.product;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
