@@ -7,7 +7,7 @@ public class Order {
   private final String id;
   private String status;
 
-  public Order(String id, String status) {
+  public Order(String id) {
     this.id = id;
     this.status = "CREATED";
   }
