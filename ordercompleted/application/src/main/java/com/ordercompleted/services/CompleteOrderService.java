@@ -1,28 +1,25 @@
 package com.ordercompleted.services;
 
-import com.ordercompleted.domain.event.OrderCompletedEvent;
-import com.ordercompleted.domain.model.Order;
+import com.ordercompleted.dispatcher.CommandQueryBus;
 import com.ordercompleted.domain.service.OrderDomainService;
+import com.ordercompleted.handlers.command.CompleteOrderCommand;
+import com.ordercompleted.handlers.command.CompleteOrderCommandHandler;
 import com.ordercompleted.ports.primary.CompleteOrderUseCase;
 import com.ordercompleted.ports.secondary.OrderEventPublisher;
 import com.ordercompleted.ports.secondary.OrderRepository;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class CompleteOrderService implements CompleteOrderUseCase {
+
+  private final CommandQueryBus commandQueryBus;
   private final OrderRepository orderRepository;
-  private final OrderEventPublisher orderEventPublisher;
   private final OrderDomainService orderDomainService;
+  private final OrderEventPublisher orderEventPublisher;
 
-   public CompleteOrderService(OrderRepository orderRepository, OrderEventPublisher orderEventPublisher) {
-     this.orderRepository = orderRepository;
-     this.orderEventPublisher = orderEventPublisher;
-     orderDomainService = new OrderDomainService();
-   }
-
-   @Override
+  @Override
   public void completeOrder(String orderId) {
-    Order order = orderRepository.findById(orderId);
-    orderDomainService.completeOrder(order);
-    orderRepository.save(order);
-    orderEventPublisher.publish(new OrderCompletedEvent(orderId));
+    CompleteOrderCommand command = new CompleteOrderCommand(orderId);
+    commandQueryBus.dispatchCommand(command, new CompleteOrderCommandHandler(orderRepository,orderDomainService,orderEventPublisher));
   }
 }
