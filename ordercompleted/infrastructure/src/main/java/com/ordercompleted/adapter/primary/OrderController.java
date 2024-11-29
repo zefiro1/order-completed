@@ -1,18 +1,21 @@
 package com.ordercompleted.adapter.primary;
 
-import com.ordercompleted.ports.primary.CompleteOrderUseCase;
-import com.ordercompleted.ports.primary.GetOrderUseCase;
+import com.ordercompleted.handlers.query.GetOrderQuery;
+import com.ordercompleted.services.CompleteOrderService;
+import com.ordercompleted.services.GetOrderService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class OrderController {
-  private final CompleteOrderUseCase completeOrderUseCase;
-  private final GetOrderUseCase getOrderUseCase;
+
+  private final CompleteOrderService completeOrderService;
+  private final GetOrderService getOrderService;
 
   public void completeOrder(String orderId) {
-    completeOrderUseCase.completeOrder(orderId);
+    completeOrderService.completeOrder(orderId);
   }
+
   public String getOrderStatus(String orderId) {
-    return getOrderUseCase.getOrderStatus(orderId);
+    return getOrderService.getOrderStatus(orderId);
   }
 }
