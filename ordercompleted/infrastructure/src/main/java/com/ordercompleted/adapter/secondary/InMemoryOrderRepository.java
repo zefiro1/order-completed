@@ -16,9 +16,4 @@ public class InMemoryOrderRepository implements OrderRepository {
   public void save(Order order) {
     database.put(order.getId(), order);
   }
-
-  @Override
-  public void delete(Order order) {
-    database.remove(order.getId());
-  }
 }
