@@ -6,17 +6,24 @@ skinparam monochrome true
 
 package "Core Layer" {
   package "Domain" {
-    class Order {
-      +id: String
-      +status: String
-      +complete(): void
-    }
-    class OrderCompletedEvent {
-      +orderId: String
-    }
-    class OrderDomainService {
-      +completeOrder(Order): void
-    }
+        package "Model"{
+            class Order {
+              +id: String
+              +status: String
+              +complete(): void
+            }
+        }
+        package "Event"{
+            class OrderCompletedEvent {
+             +orderId: String
+            }
+        }
+         package "Service"{
+            class OrderDomainService {
+             +completeOrder(Order): void
+            }
+        }
+
   }
 
   package "Ports" {
@@ -41,12 +48,14 @@ package "Core Layer" {
 }
 
 package "Application Layer" {
-  class CompleteOrderService {
-    +completeOrder(orderId: String): void
-  }
-  class GetOrderService {
-    +getOrderStatus(orderId: String): String
-  }
+    package "Services" {
+     class CompleteOrderService {
+        +completeOrder(orderId: String): void
+     }
+    class GetOrderService {
+     +getOrderStatus(orderId: String): String
+    }
+   }
 }
 
 package "Infrastructure Layer" {
@@ -65,6 +74,9 @@ package "Infrastructure Layer" {
       +publish(event: OrderCompletedEvent): void
     }
   }
+  class Main{
+   +main(String[] args): void
+  }
 }
 
 ' Relationships
@@ -79,6 +91,10 @@ GetOrderService ..> OrderRepository : <<uses>>
 
 InMemoryOrderRepository --|> OrderRepository
 ConsoleOrderEventPublisher --|> OrderEventPublisher
+
+CompleteOrderService --|> CompleteOrderUseCase
+GetOrderService --|> GetOrderUseCase
+
 
 Order ..> OrderCompletedEvent : <<triggers>>
 OrderDomainService ..> Order : <<uses>>
