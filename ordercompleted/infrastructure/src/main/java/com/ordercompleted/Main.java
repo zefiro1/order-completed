@@ -1,38 +1,34 @@
 package com.ordercompleted;
 
+import com.ordercompleted.adapter.primary.InventoryController;
 import com.ordercompleted.adapter.primary.OrderController;
 import com.ordercompleted.adapter.secondary.ConsoleOrderEventPublisher;
 import com.ordercompleted.adapter.secondary.InMemoryInventoryService;
 import com.ordercompleted.adapter.secondary.InMemoryOrderRepository;
+import com.ordercompleted.adapter.secondary.InMemoryProductRepository;
 import com.ordercompleted.dispatcher.CommandQueryBus;
 import com.ordercompleted.domain.model.Order;
+import com.ordercompleted.domain.model.Product;
 import com.ordercompleted.domain.service.OrderDomainService;
-import com.ordercompleted.ports.secondary.InventoryService;
-import com.ordercompleted.ports.secondary.OrderEventPublisher;
-import com.ordercompleted.ports.secondary.OrderRepository;
 import com.ordercompleted.services.CompleteOrderService;
 import com.ordercompleted.services.GetOrderService;
+import com.ordercompleted.services.ManageInventoryService;
 
 public class Main {
   public static void main(String[] args) {
-
-    OrderRepository orderRepository = new InMemoryOrderRepository();
-    OrderEventPublisher orderEventPublisher = new ConsoleOrderEventPublisher();
-    InventoryService inventoryServicePort = new InMemoryInventoryService();
-    OrderDomainService orderDomainService = new OrderDomainService(inventoryServicePort);
-
     CommandQueryBus commandQueryBus = new CommandQueryBus();
+    InMemoryProductRepository productRepository = new InMemoryProductRepository();
 
-    CompleteOrderService completeOrderService = new CompleteOrderService(
-        commandQueryBus, orderRepository, orderDomainService, orderEventPublisher);
-    GetOrderService getOrderService = new GetOrderService(commandQueryBus, orderRepository);
+    InventoryController inventoryController = new InventoryController(new ManageInventoryService(commandQueryBus, productRepository));
+    inventoryController.addProduct(new Product("1", "PC", 10, 1));
 
-    OrderController orderController = new OrderController(completeOrderService, getOrderService);
-
-    // Simulación
+    InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
+    OrderController orderController = new OrderController(new CompleteOrderService(commandQueryBus, orderRepository,
+        new OrderDomainService(new InMemoryInventoryService(productRepository)), new ConsoleOrderEventPublisher()), new GetOrderService(commandQueryBus,
+        orderRepository));
     orderRepository.save(new Order("1"));
-    orderController.completeOrder("1", "product1", 2);
-    System.out.println("Estado de la orden: " + orderController.getOrderStatus("1"));
-
+    inventoryController.getProductById("1");
+    orderController.completeOrder("1", "1", 1);
+    inventoryController.getProductById("1");
   }
 }
