@@ -1,8 +1,8 @@
 package com.ordercompleted.adapter.secondary;
 
 import com.ordercompleted.domain.event.OrderCompletedEvent;
+import com.ordercompleted.ports.primary.OrderServiceUseCase;
 import com.ordercompleted.ports.secondary.OrderCompletedEventProcessor;
-import com.ordercompleted.services.CompleteOrderService;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -20,7 +20,7 @@ public class OrderEventConsumer implements OrderCompletedEventProcessor {
   private static final String USERNAME = "user";
   private static final String PASSWORD = "password";
   private static final String VIRTUAL_HOST = "/";
-  private final CompleteOrderService completeOrderService;
+  private final OrderServiceUseCase orderServiceUseCase;
   @Override
   public void processOrderCompletedEvent(OrderCompletedEvent event) {
     ConnectionFactory factory = new ConnectionFactory();
@@ -50,7 +50,7 @@ public class OrderEventConsumer implements OrderCompletedEventProcessor {
   }
   private void processOrderCompletedEvent(String message) {
     String orderId = extractOrderIdFromMessage(message);
-    //completeOrderService.completeOrder(orderId);
+    orderServiceUseCase.markOrderAsCompleted(orderId);
   }
   private String extractOrderIdFromMessage(String message) {
     return message.split(":")[1].trim();
