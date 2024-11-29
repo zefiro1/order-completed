@@ -1,8 +1,6 @@
 package com.ordercompleted.services;
 
 import com.ordercompleted.dispatcher.CommandQueryBus;
-import com.ordercompleted.domain.event.OrderCompletedEvent;
-import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.domain.service.OrderDomainService;
 import com.ordercompleted.handlers.command.CompleteOrderCommand;
 import com.ordercompleted.handlers.command.CompleteOrderCommandHandler;
