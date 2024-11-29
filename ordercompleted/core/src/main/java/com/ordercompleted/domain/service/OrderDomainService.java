@@ -9,7 +9,6 @@ public class OrderDomainService {
   private final InventoryService inventoryService;
 
   public void completeOrder(Order order, String productId, int quantity) {
-    order.complete();
     inventoryService.reduceStock(productId, quantity);
   }
 }
