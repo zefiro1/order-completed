@@ -42,6 +42,9 @@ package "Core Layer" {
       interface OrderEventPublisher {
         +publish(event: OrderCompletedEvent): void
       }
+      interface OrderEventConsumerPort {
+        +consumeOrderCompletedEvent(): void
+      }
     }
   }
 }
@@ -110,6 +113,10 @@ package "Infrastructure Layer" {
     class ConsoleOrderEventPublisher {
       +publish(event: OrderCompletedEvent): void
     }
+    class OrderEventConsumer {
+      +consumeOrderCompletedEvent(): void
+    }
+    OrderEventConsumer --|> OrderEventConsumerPort
   }
   class Main {
    +main(String[] args): void
@@ -144,6 +151,7 @@ GetOrderService ..> GetOrderQuery : <<creates>>
 
 InMemoryOrderRepository --|> OrderRepository
 ConsoleOrderEventPublisher --|> OrderEventPublisher
+OrderEventConsumer ..> CompleteOrderService : <<uses>>
 
 Order ..> OrderCompletedEvent : <<triggers>>
 OrderDomainService ..> Order : <<uses>>
