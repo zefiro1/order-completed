@@ -6,24 +6,23 @@ skinparam monochrome true
 
 package "Core Layer" {
   package "Domain" {
-        package "Model"{
+        package "Model" {
             class Order {
               +id: String
               +status: String
               +complete(): void
             }
         }
-        package "Event"{
+        package "Event" {
             class OrderCompletedEvent {
              +orderId: String
             }
         }
-         package "Service"{
+         package "Service" {
             class OrderDomainService {
              +completeOrder(Order): void
             }
         }
-
   }
 
   package "Ports" {
@@ -49,13 +48,51 @@ package "Core Layer" {
 
 package "Application Layer" {
     package "Services" {
-     class CompleteOrderService {
-        +completeOrder(orderId: String): void
-     }
-    class GetOrderService {
-     +getOrderStatus(orderId: String): String
+        class CompleteOrderService {
+          +completeOrder(orderId: String): void
+        }
+        class GetOrderService {
+          +getOrderStatus(orderId: String): String
+        }
+        CompleteOrderService --|> CompleteOrderUseCase
+        GetOrderService --|> GetOrderUseCase
     }
-   }
+
+    package "Dispatcher" {
+        class CommandQueryBus {
+            +dispatchCommand(command: Command, handler: CommandHandler): void
+            +dispatchQuery(query: Query, handler: QueryHandler): void
+        }
+    }
+
+    package "Handlers" {
+        package "Command" {
+            interface CommandHandler<T> {
+              +handle(command: T): void
+            }
+            class CompleteOrderCommand {
+              +orderId: String
+            }
+            class CompleteOrderCommandHandler {
+              +handle(command: CompleteOrderCommand): void
+            }
+            CompleteOrderCommandHandler --|> CommandHandler
+            CompleteOrderService ..> CompleteOrderCommand : <<creates>>
+        }
+        package "Query" {
+            interface QueryHandler<R> {
+              +handle(query: Object): R
+            }
+            class GetOrderQuery {
+              +orderId: String
+            }
+            class GetOrderQueryHandler {
+              +handle(query: GetOrderQuery): String
+            }
+            GetOrderQueryHandler --|> QueryHandler
+            GetOrderService ..> GetOrderQuery : <<creates>>
+        }
+    }
 }
 
 package "Infrastructure Layer" {
@@ -74,27 +111,39 @@ package "Infrastructure Layer" {
       +publish(event: OrderCompletedEvent): void
     }
   }
-  class Main{
+  class Main {
    +main(String[] args): void
   }
 }
 
 ' Relationships
-OrderController --> CompleteOrderUseCase
-OrderController --> GetOrderUseCase
+OrderController --> CompleteOrderService : <<uses>>
+OrderController --> GetOrderService : <<uses>>
 
-CompleteOrderService ..> OrderRepository : <<uses>>
-CompleteOrderService ..> OrderEventPublisher : <<publishes>>
-CompleteOrderService ..> OrderDomainService : <<uses>>
+CompleteOrderService --> CommandQueryBus : <<uses>>
+CompleteOrderService --> OrderRepository : <<uses>>
+CompleteOrderService --> OrderEventPublisher : <<uses>>
+CompleteOrderService --> OrderDomainService : <<uses>>
+CompleteOrderService --> CompleteOrderCommandHandler : <<dispatches>>
 
-GetOrderService ..> OrderRepository : <<uses>>
+GetOrderService --> CommandQueryBus : <<uses>>
+GetOrderService --> OrderRepository : <<uses>>
+GetOrderService --> GetOrderQueryHandler : <<dispatches>>
+
+CommandQueryBus ..> CompleteOrderCommandHandler : <<dispatches>>
+CommandQueryBus ..> GetOrderQueryHandler : <<dispatches>>
+
+CompleteOrderCommandHandler ..> OrderRepository : <<uses>>
+CompleteOrderCommandHandler ..> OrderDomainService : <<uses>>
+CompleteOrderCommandHandler ..> OrderEventPublisher : <<uses>>
+
+GetOrderQueryHandler ..> OrderRepository : <<uses>>
+
+CompleteOrderService ..> CompleteOrderCommand : <<creates>>
+GetOrderService ..> GetOrderQuery : <<creates>>
 
 InMemoryOrderRepository --|> OrderRepository
 ConsoleOrderEventPublisher --|> OrderEventPublisher
-
-CompleteOrderService --|> CompleteOrderUseCase
-GetOrderService --|> GetOrderUseCase
-
 
 Order ..> OrderCompletedEvent : <<triggers>>
 OrderDomainService ..> Order : <<uses>>
