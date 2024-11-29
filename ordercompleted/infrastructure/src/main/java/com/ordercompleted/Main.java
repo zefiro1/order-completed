@@ -7,12 +7,10 @@ import com.ordercompleted.adapter.secondary.InMemoryInventoryService;
 import com.ordercompleted.adapter.secondary.InMemoryOrderRepository;
 import com.ordercompleted.adapter.secondary.InMemoryProductRepository;
 import com.ordercompleted.dispatcher.CommandQueryBus;
-import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.domain.model.Product;
 import com.ordercompleted.domain.service.OrderDomainService;
-import com.ordercompleted.services.CompleteOrderService;
-import com.ordercompleted.services.GetOrderService;
 import com.ordercompleted.services.ManageInventoryService;
+import com.ordercompleted.services.OrderService;
 
 public class Main {
   public static void main(String[] args) {
@@ -23,12 +21,15 @@ public class Main {
     inventoryController.addProduct(new Product("1", "PC", 10, 1));
 
     InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
-    OrderController orderController = new OrderController(new CompleteOrderService(commandQueryBus, orderRepository,
-        new OrderDomainService(new InMemoryInventoryService(productRepository)), new ConsoleOrderEventPublisher()), new GetOrderService(commandQueryBus,
-        orderRepository));
-    orderRepository.save(new Order("1"));
-    inventoryController.getProductById("1");
-    orderController.completeOrder("1", "1", 1);
-    inventoryController.getProductById("1");
+    OrderController orderController = new OrderController(new OrderService(commandQueryBus, orderRepository, new ConsoleOrderEventPublisher(),
+        new OrderDomainService(new InMemoryInventoryService(productRepository))));
+    orderController.createOrder("1");
+    orderController.addItemToOrder("1", "1", 1);
+    orderController.markOrderAsPaid("1");
+    orderController.markOrderAsShipped("1");
+    orderController.markOrderAsCompleted("1");
+
+    Product productById = inventoryController.getProductById("1");
+    System.out.printf("Stock: %d%n", productById.getStock());
   }
 }
