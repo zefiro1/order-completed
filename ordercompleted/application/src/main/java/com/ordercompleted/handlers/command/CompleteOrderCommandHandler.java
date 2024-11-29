@@ -15,7 +15,7 @@ public class CompleteOrderCommandHandler implements CommandHandler<CompleteOrder
   @Override
   public void handle(CompleteOrderCommand command) {
     Order order = orderRepository.findById(command.getOrderId());
-    orderDomainService.completeOrder(order);
+    orderDomainService.completeOrder(order, command.getProductId(), command.getQuantity());
     orderRepository.save(order);
     orderEventPublisher.publish(new OrderCompletedEvent(command.getOrderId()));
   }

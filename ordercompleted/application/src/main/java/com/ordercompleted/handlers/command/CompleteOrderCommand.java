@@ -7,4 +7,6 @@ import lombok.Getter;
 @Getter
 public class CompleteOrderCommand {
   private final String orderId;
+  private final String productId;
+  private final int quantity;
 }

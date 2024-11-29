@@ -1,6 +1,8 @@
 package com.ordercompleted.services;
 
 import com.ordercompleted.dispatcher.CommandQueryBus;
+import com.ordercompleted.domain.event.OrderCompletedEvent;
+import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.domain.service.OrderDomainService;
 import com.ordercompleted.handlers.command.CompleteOrderCommand;
 import com.ordercompleted.handlers.command.CompleteOrderCommandHandler;
@@ -18,8 +20,8 @@ public class CompleteOrderService implements CompleteOrderUseCase {
   private final OrderEventPublisher orderEventPublisher;
 
   @Override
-  public void completeOrder(String orderId) {
-    CompleteOrderCommand command = new CompleteOrderCommand(orderId);
-    commandQueryBus.dispatchCommand(command, new CompleteOrderCommandHandler(orderRepository,orderDomainService,orderEventPublisher));
+  public void completeOrder(String orderId, String productId, int quantity) {
+    CompleteOrderCommand command = new CompleteOrderCommand(orderId, productId, quantity);
+    commandQueryBus.dispatchCommand(command, new CompleteOrderCommandHandler(orderRepository, orderDomainService, orderEventPublisher));
   }
 }
