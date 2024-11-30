@@ -2,10 +2,14 @@ package com.ordercompleted.services;
 
 import com.ordercompleted.dispatcher.CommandQueryBus;
 import com.ordercompleted.domain.service.OrderDomainService;
+import com.ordercompleted.domain.service.PaymentDomainService;
 import com.ordercompleted.handlers.command.order.*;
+import com.ordercompleted.handlers.command.payment.ConfirmPaymentCommand;
+import com.ordercompleted.handlers.command.payment.ConfirmPaymentCommandHandler;
 import com.ordercompleted.ports.primary.OrderServiceUseCase;
 import com.ordercompleted.ports.secondary.OrderEventPublisher;
 import com.ordercompleted.ports.secondary.OrderRepository;
+import com.ordercompleted.ports.secondary.PaymentProvider;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
@@ -14,6 +18,7 @@ public class OrderService implements OrderServiceUseCase {
   private final OrderRepository orderRepository;
   private final OrderEventPublisher orderEventPublisher;
   private final OrderDomainService orderDomainService;
+  private final PaymentProvider paymentProvider;
   @Override
   public void createOrder(String orderId) {
     CreateOrderCommand command = new CreateOrderCommand(orderId);
@@ -45,9 +50,9 @@ public class OrderService implements OrderServiceUseCase {
   }
 
   @Override
-  public void markOrderAsPaid(String orderId) {
-    MarkOrderAsPaidCommand command = new MarkOrderAsPaidCommand(orderId);
-    commandQueryBus.dispatchCommand(command, new MarkOrderAsPaidCommandHandler(orderRepository));
+  public void markOrderAsPaid(String orderId, double amount) {
+    ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId,amount);
+    commandQueryBus.dispatchCommand(command, new ConfirmPaymentCommandHandler(orderRepository,new PaymentDomainService(paymentProvider)));
   }
 
   @Override
