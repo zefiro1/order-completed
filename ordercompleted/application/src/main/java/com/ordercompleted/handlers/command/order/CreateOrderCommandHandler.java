@@ -11,7 +11,7 @@ public class CreateOrderCommandHandler implements CommandHandler<CreateOrderComm
 
   @Override
   public void handle(CreateOrderCommand command) {
-    Order order = new Order(command.getOrderId());
+    Order order = new Order(command.getOrderId(), command.getUserId());
     orderRepository.save(order);
   }
 }

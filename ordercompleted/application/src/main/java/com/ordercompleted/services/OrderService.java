@@ -7,21 +7,23 @@ import com.ordercompleted.handlers.command.order.*;
 import com.ordercompleted.handlers.command.payment.ConfirmPaymentCommand;
 import com.ordercompleted.handlers.command.payment.ConfirmPaymentCommandHandler;
 import com.ordercompleted.ports.primary.OrderServiceUseCase;
-import com.ordercompleted.ports.secondary.OrderEventPublisher;
-import com.ordercompleted.ports.secondary.OrderRepository;
-import com.ordercompleted.ports.secondary.PaymentProvider;
+import com.ordercompleted.ports.secondary.*;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class OrderService implements OrderServiceUseCase {
-  private final CommandQueryBus commandQueryBus;
   private final OrderRepository orderRepository;
+  private final UserRepository userRepository;
   private final OrderEventPublisher orderEventPublisher;
-  private final OrderDomainService orderDomainService;
   private final PaymentProvider paymentProvider;
+  private final NotificationService notificationService;
+
+  private final CommandQueryBus commandQueryBus;
+  private final OrderDomainService orderDomainService;
+
   @Override
-  public void createOrder(String orderId) {
-    CreateOrderCommand command = new CreateOrderCommand(orderId);
+  public void createOrder(String orderId, String userId) {
+    CreateOrderCommand command = new CreateOrderCommand(orderId, userId);
     commandQueryBus.dispatchCommand(command, new CreateOrderCommandHandler(orderRepository));
   }
 
@@ -51,19 +53,21 @@ public class OrderService implements OrderServiceUseCase {
 
   @Override
   public void markOrderAsPaid(String orderId, double amount) {
-    ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId,amount);
-    commandQueryBus.dispatchCommand(command, new ConfirmPaymentCommandHandler(orderRepository,new PaymentDomainService(paymentProvider)));
+    ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId, amount);
+    commandQueryBus.dispatchCommand(command,
+        new ConfirmPaymentCommandHandler(orderRepository, userRepository, notificationService, new PaymentDomainService(paymentProvider)));
   }
 
   @Override
   public void markOrderAsShipped(String orderId) {
     MarkOrderAsShippedCommand command = new MarkOrderAsShippedCommand(orderId);
-    commandQueryBus.dispatchCommand(command, new MarkOrderAsShippedCommandHandler(orderRepository));
+    commandQueryBus.dispatchCommand(command, new MarkOrderAsShippedCommandHandler(orderRepository, userRepository, notificationService));
   }
 
   @Override
   public void markOrderAsCompleted(String orderId) {
     MarkOrderAsCompletedCommand command = new MarkOrderAsCompletedCommand(orderId);
-    commandQueryBus.dispatchCommand(command, new MarkOrderAsCompletedCommandHandler(orderRepository,orderEventPublisher,orderDomainService));
+    commandQueryBus.dispatchCommand(command,
+        new MarkOrderAsCompletedCommandHandler(orderRepository, userRepository, notificationService, orderEventPublisher, orderDomainService));
   }
 }

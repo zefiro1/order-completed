@@ -7,4 +7,5 @@ import lombok.Getter;
 @Getter
 public class CreateOrderCommand {
   private final String orderId;
+  private final String userId;
 }
