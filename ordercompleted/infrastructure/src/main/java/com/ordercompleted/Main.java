@@ -2,10 +2,7 @@ package com.ordercompleted;
 
 import com.ordercompleted.adapter.primary.InventoryController;
 import com.ordercompleted.adapter.primary.OrderController;
-import com.ordercompleted.adapter.secondary.ConsoleOrderEventPublisher;
-import com.ordercompleted.adapter.secondary.InMemoryInventoryService;
-import com.ordercompleted.adapter.secondary.InMemoryOrderRepository;
-import com.ordercompleted.adapter.secondary.InMemoryProductRepository;
+import com.ordercompleted.adapter.secondary.*;
 import com.ordercompleted.dispatcher.CommandQueryBus;
 import com.ordercompleted.domain.model.Product;
 import com.ordercompleted.domain.service.OrderDomainService;
@@ -22,10 +19,10 @@ public class Main {
 
     InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
     OrderController orderController = new OrderController(new OrderService(commandQueryBus, orderRepository, new ConsoleOrderEventPublisher(),
-        new OrderDomainService(new InMemoryInventoryService(productRepository))));
+        new OrderDomainService(new InMemoryInventoryService(productRepository)),new StripePaymentProvider()));
     orderController.createOrder("1");
     orderController.addItemToOrder("1", "1", 1);
-    orderController.markOrderAsPaid("1");
+    orderController.confirmOrderPayment("1",1800);
     orderController.markOrderAsShipped("1");
     orderController.markOrderAsCompleted("1");
 
