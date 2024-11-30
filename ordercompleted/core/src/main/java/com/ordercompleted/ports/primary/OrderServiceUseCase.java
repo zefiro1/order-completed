@@ -12,7 +12,7 @@ public interface OrderServiceUseCase {
 
   void cancelOrder(String orderId);
 
-  void markOrderAsPaid(String orderId);
+  void markOrderAsPaid(String orderId, double amount);
 
   void markOrderAsShipped(String orderId);
 
