@@ -2,7 +2,7 @@ package com.ordercompleted.ports.primary;
 
 public interface OrderServiceUseCase {
 
-  void createOrder(String orderId);
+  void createOrder(String orderId, String userId);
 
   void addItemToOrder(String orderId, String productId, int quantity);
 

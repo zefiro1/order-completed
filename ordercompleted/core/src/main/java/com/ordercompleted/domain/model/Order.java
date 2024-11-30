@@ -8,11 +8,13 @@ import java.util.Map;
 @Getter
 public class Order {
   private final String id;
+  private final String userId;
   private OrderStatus status;
-  private Map<String, OrderItem> items;
+  private final Map<String, OrderItem> items;
 
-  public Order(String id) {
+  public Order(String id, String userId) {
     this.id = id;
+    this.userId = userId;
     this.status = OrderStatus.PENDING;
     items = new HashMap<>();
   }
