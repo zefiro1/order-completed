@@ -9,8 +9,8 @@ public class OrderController {
   private final OrderServiceUseCase orderServiceUseCase;
 
   // Crear una orden
-  public void createOrder(String orderId) {
-    orderServiceUseCase.createOrder(orderId);
+  public void createOrder(String orderId, String userId) {
+    orderServiceUseCase.createOrder(orderId, userId);
   }
 
   // Agregar un artículo a la orden
