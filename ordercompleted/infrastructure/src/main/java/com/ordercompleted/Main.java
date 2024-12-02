@@ -1,70 +1,68 @@
 package com.ordercompleted;
 
-import com.ordercompleted.adapter.primary.InventoryController;
 import com.ordercompleted.adapter.primary.OrderController;
+import com.ordercompleted.adapter.primary.ReportController;
 import com.ordercompleted.adapter.primary.UserController;
 import com.ordercompleted.adapter.secondary.*;
 import com.ordercompleted.dispatcher.CommandQueryBus;
-import com.ordercompleted.domain.model.Product;
+import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.domain.model.Role;
-import com.ordercompleted.domain.model.User;
 import com.ordercompleted.domain.service.OrderDomainService;
 import com.ordercompleted.domain.service.ProductDomainService;
-import com.ordercompleted.ports.secondary.NotificationService;
-import com.ordercompleted.services.ManageInventoryService;
 import com.ordercompleted.services.OrderService;
+import com.ordercompleted.services.ReportService;
+import com.ordercompleted.services.TaxService;
 import com.ordercompleted.services.UserService;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Main {
   public static void main(String[] args) {
-    CommandQueryBus commandQueryBus = new CommandQueryBus();
-    InMemoryProductRepository productRepository = new InMemoryProductRepository();
-
-    InventoryController inventoryController = new InventoryController(new ManageInventoryService(commandQueryBus, productRepository));
-    System.out.println("=".repeat(10));
-    System.out.println("Add products to inventory");
-    inventoryController.addProduct(new Product("1", "PC", 10, 4));
-    System.out.println("=".repeat(10));
-    NotificationService emailNotificationService = new EmailNotificationService();
-    NotificationService smsNotificationService = new SMSNotificationService();
-    List<NotificationService> notificationServices = Arrays.asList(emailNotificationService, smsNotificationService);
-    NotificationService compositeNotificationService = new CompositeNotificationService(notificationServices);
     InMemoryUserRepository userRepository = new InMemoryUserRepository();
-
-    UserController userController = new UserController(new UserService(userRepository, new BCryptPasswordEncoder(), new JwtTokenProvider(), commandQueryBus));
-    System.out.println("=".repeat(10));
-    System.out.println("Login User");
-    userController.register("jose.fg@developer.com", "jose2--2", "Jose", Role.ADMIN);
-    userController.login("jose.fg@developer.com", "jose2--2");
-    userController.checkAdminAccess(new User("1", "jose.fg@developer.com", "jose2--2", "Jose", Role.ADMIN));
+    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    JwtTokenProvider tokenProvider = new JwtTokenProvider();
+    CommandQueryBus commandQueryBus = new CommandQueryBus();
+    UserService userServiceUseCase = new UserService(userRepository, passwordEncoder, tokenProvider, commandQueryBus);
+    UserController userController = new UserController(userServiceUseCase);
+    userController.register("jose.fg@developer.com", "jose--2", "Jose", Role.CLIENT);
+    userController.login("jose.fg@developer.com", "jose--2");
 
     InMemoryOrderRepository orderRepository = new InMemoryOrderRepository();
-    OrderController orderController = new OrderController(
-        new OrderService(orderRepository, userRepository, new ConsoleOrderEventPublisher(), new StripePaymentProvider(), compositeNotificationService,
-            commandQueryBus, new OrderDomainService(
-            new InMemoryInventoryService(productRepository, new ProductDomainService(productRepository, compositeNotificationService)))));
+    ConsoleOrderEventPublisher orderCompletedEvent = new ConsoleOrderEventPublisher();
+    StripePaymentProvider paymentProvider = new StripePaymentProvider();
+    EmailNotificationService emailNotificationService = new EmailNotificationService();
+    SMSNotificationService smsNotificationService = new SMSNotificationService();
+    CompositeNotificationService compositeNotificationService = new CompositeNotificationService(List.of(emailNotificationService, smsNotificationService));
+    InMemoryProductRepository productRepository = new InMemoryProductRepository();
+    ProductDomainService productDomainService = new ProductDomainService(productRepository, compositeNotificationService);
+    InMemoryInventoryService inventoryService = new InMemoryInventoryService(productRepository, productDomainService);
+    OrderDomainService orderDomainService = new OrderDomainService(inventoryService, productRepository);
+    OrderService orderService = new OrderService(orderRepository, userRepository, orderCompletedEvent, paymentProvider, compositeNotificationService,
+        commandQueryBus, orderDomainService);
 
-    System.out.println("=".repeat(10));
-    System.out.println("Order 1");
+    System.out.println("Creando órdenes...");
+    OrderController orderController = new OrderController(orderService);
     orderController.createOrder("1", "1");
-    orderController.addItemToOrder("1", "1", 6);
-    orderController.confirmOrderPayment("1", 1800);
+    orderController.addItemToOrder("1", "1", 1);
+    orderController.addItemToOrder("1", "2", 1);
+    orderController.confirmOrderPayment("1");
     orderController.markOrderAsShipped("1");
     orderController.markOrderAsCompleted("1");
-    System.out.println("=".repeat(10));
-    System.out.println("Order 2");
-    orderController.createOrder("2", "1");
-    orderController.addItemToOrder("2", "1", 4);
-    orderController.confirmOrderPayment("2", 1800);
-    orderController.markOrderAsShipped("2");
-    orderController.markOrderAsCompleted("2");
-    System.out.println("=".repeat(10));
 
-    Product productById = inventoryController.getProductById("1");
-    System.out.printf("Stock: %d%n", productById.getStock());
+    TaxService taxService = new TaxService();
+    ReportService reportServiceUseCase = new ReportService(orderRepository, commandQueryBus, taxService);
+    ReportController reportController = new ReportController(reportServiceUseCase);
+    double totalSales = reportController.getTotalSales();
+    double totalRevenue = reportController.getTotalRevenue();
+    List<Order> allOrders = reportController.getAllOrders();
+    allOrders.forEach(order -> System.out.printf("Order ID: %s, Total: %.2f, Status: %s%n", order.getId(), order.getTotalAmount(), order.getStatus()));
+    System.out.printf("Total Sales (Gross): %.2f%n", totalSales);
+    System.out.printf("Total Revenue (Net): %.2f%n", totalRevenue);
+    System.out.printf("Completed Orders: %s%n", reportController.getCompletedOrdersCount());
+    System.out.printf("Canceled Orders: %s%n", reportController.getCancelledOrdersCount());
+    System.out.printf("Top Selling Products: %s%n", reportController.getTopSellingProducts());
+    System.out.printf("Frequent Customers: %s%n", reportController.getFrequentCustomers());
 
   }
+
 }
