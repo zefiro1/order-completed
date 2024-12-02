@@ -10,13 +10,14 @@ public class Product {
   private String name;
   private int stock;
   private int lowStockThreshold;
+  private double price;
 
   public void reduceStock(int quantity) {
     if (quantity > stock) {
       throw new IllegalStateException("Stock insuficiente para el producto: " + id);
     }
     stock -= quantity;
-    System.out.printf("Stock actualizado: %d%n", stock);
+    System.out.printf("Stock actualizado del %s: %d%n", name, stock);
   }
 
   public boolean isLowStock() {
