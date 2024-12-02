@@ -7,5 +7,4 @@ import lombok.Getter;
 @Getter
 public class ConfirmPaymentCommand {
   private final String orderId;
-  private final double amount;
 }

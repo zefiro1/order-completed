@@ -19,7 +19,7 @@ public class MarkOrderAsShippedCommandHandler implements CommandHandler<MarkOrde
     Order order = orderRepository.findById(command.getOrderId());
     order.markAsShipped();
     orderRepository.save(order);
-    User user = userRepository.findById(order.getUserId());
+    User user = userRepository.findById(order.getCustomerId());
     notificationService.sendOrderStatusNotification(user.getEmail(), order.getId(), OrderStatus.SHIPPED);
   }
 }

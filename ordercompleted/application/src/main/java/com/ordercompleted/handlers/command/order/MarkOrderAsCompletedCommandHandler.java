@@ -22,11 +22,11 @@ public class MarkOrderAsCompletedCommandHandler implements CommandHandler<MarkOr
   @Override
   public void handle(MarkOrderAsCompletedCommand command) {
     Order order = orderRepository.findById(command.getOrderId());
-    order.getItems().forEach((productId, orderItem) -> orderDomainService.completeOrder(order, productId, orderItem.getQuantity()));
+    order.getItems().forEach((productId, orderItem) -> orderDomainService.completeOrder(productId, orderItem.getQuantity()));
     order.markAsCompleted();
     orderRepository.save(order);
     orderEventPublisher.publish(new OrderCompletedEvent(command.getOrderId()));
-    User user = userRepository.findById(order.getUserId());
+    User user = userRepository.findById(order.getCustomerId());
     notificationService.sendOrderStatusNotification(user.getEmail(), order.getId(), OrderStatus.COMPLETED);
   }
 }

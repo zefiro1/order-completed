@@ -1,6 +1,6 @@
 package com.ordercompleted.handlers.query;
 
-public interface QueryHandler<R> {
-  R handle(Object query);
+public interface QueryHandler<Q, R> {
+  R handle(Q query);
 }
 

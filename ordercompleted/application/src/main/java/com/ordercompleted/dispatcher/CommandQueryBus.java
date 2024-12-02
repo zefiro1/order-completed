@@ -8,7 +8,7 @@ public class CommandQueryBus {
     handler.handle(command);
   }
 
-  public <R> R dispatchQuery(Object query, QueryHandler<R> handler) {
+  public <Q, R> R dispatchQuery(Q query, QueryHandler<Q, R> handler) {
     return handler.handle(query);
   }
 }

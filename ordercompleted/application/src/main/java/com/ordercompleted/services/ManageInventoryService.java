@@ -47,4 +47,10 @@ public class ManageInventoryService implements ManageInventoryUseCase {
     DeleteProductCommand command = new DeleteProductCommand(productId);
     commandQueryBus.dispatchCommand(command, new DeleteProductCommandHandler(productRepository));
   }
+
+  @Override
+  public List<Product> getAllProducts() {
+    return productRepository.findAll();
+  }
+
 }

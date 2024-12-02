@@ -24,13 +24,13 @@ public class OrderService implements OrderServiceUseCase {
   @Override
   public void createOrder(String orderId, String userId) {
     CreateOrderCommand command = new CreateOrderCommand(orderId, userId);
-    commandQueryBus.dispatchCommand(command, new CreateOrderCommandHandler(orderRepository));
+    commandQueryBus.dispatchCommand(command, new CreateOrderCommandHandler(orderRepository, orderDomainService));
   }
 
   @Override
   public void addItemToOrder(String orderId, String productId, int quantity) {
     AddItemToOrderCommand command = new AddItemToOrderCommand(orderId, productId, quantity);
-    commandQueryBus.dispatchCommand(command, new AddItemToOrderCommandHandler(orderRepository));
+    commandQueryBus.dispatchCommand(command, new AddItemToOrderCommandHandler(orderRepository, orderDomainService));
   }
 
   @Override
@@ -52,10 +52,10 @@ public class OrderService implements OrderServiceUseCase {
   }
 
   @Override
-  public void markOrderAsPaid(String orderId, double amount) {
-    ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId, amount);
+  public void markOrderAsPaid(String orderId) {
+    ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId);
     commandQueryBus.dispatchCommand(command,
-        new ConfirmPaymentCommandHandler(orderRepository, userRepository, notificationService, new PaymentDomainService(paymentProvider)));
+        new ConfirmPaymentCommandHandler(orderRepository, userRepository, notificationService, new PaymentDomainService(paymentProvider), orderDomainService));
   }
 
   @Override
@@ -69,5 +69,10 @@ public class OrderService implements OrderServiceUseCase {
     MarkOrderAsCompletedCommand command = new MarkOrderAsCompletedCommand(orderId);
     commandQueryBus.dispatchCommand(command,
         new MarkOrderAsCompletedCommandHandler(orderRepository, userRepository, notificationService, orderEventPublisher, orderDomainService));
+  }
+
+  @Override
+  public double getOrderTotalAmount(String orderId) {
+    return orderDomainService.calculateTotalAmount(orderRepository.findById(orderId));
   }
 }

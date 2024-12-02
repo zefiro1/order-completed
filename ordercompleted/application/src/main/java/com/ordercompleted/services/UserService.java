@@ -13,8 +13,8 @@ import com.ordercompleted.ports.secondary.TokenProvider;
 import com.ordercompleted.ports.secondary.UserRepository;
 import lombok.AllArgsConstructor;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 @AllArgsConstructor
 public class UserService implements UserServiceUseCase {
@@ -30,7 +30,7 @@ public class UserService implements UserServiceUseCase {
       throw new IllegalStateException("El correo ya está registrado.");
     }
     String encodedPassword = passwordEncoder.encode(password);
-    User user = new User(UUID.randomUUID().toString(), email, encodedPassword, name, role);
+    User user = new User("1", email, encodedPassword, name, role);
     registerUserInRepository(user);
   }
 
@@ -40,7 +40,7 @@ public class UserService implements UserServiceUseCase {
     if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
       throw new IllegalStateException("Credenciales inválidas.");
     }
-
+    System.out.printf("User loged: %s%n", email);
     return tokenProvider.generateToken(user);
   }
 
@@ -51,9 +51,15 @@ public class UserService implements UserServiceUseCase {
     }
   }
 
+  @Override
+  public List<User> allUsers() {
+    return userRepository.findAll();
+  }
+
   private void registerUserInRepository(User user) {
     RegisterUserCommand registerUserCommand = new RegisterUserCommand(user);
     commandQueryBus.dispatchCommand(registerUserCommand, new RegisterUserCommandHandler(userRepository));
+    System.out.printf("User Registred: %s%n", user.getEmail());
   }
 
   private User getUserByEmail(String email) {

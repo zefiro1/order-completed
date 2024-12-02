@@ -6,14 +6,11 @@ import com.ordercompleted.ports.secondary.ProductRepository;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class GetProductQueryHandler implements QueryHandler<Product> {
+public class GetProductQueryHandler implements QueryHandler<GetProductQuery, Product> {
   private final ProductRepository productRepository;
 
   @Override
-  public Product handle(Object query) {
-    if (query instanceof GetProductQuery getProductQuery) {
-      return productRepository.findById(getProductQuery.getProductId());
-    }
-    throw new IllegalArgumentException("Invalid query type");
+  public Product handle(GetProductQuery query) {
+    return productRepository.findById(query.getProductId());
   }
 }
