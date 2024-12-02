@@ -4,6 +4,7 @@ import com.ordercompleted.domain.model.User;
 import com.ordercompleted.ports.secondary.UserRepository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InMemoryUserRepository implements UserRepository {
@@ -22,5 +23,10 @@ public class InMemoryUserRepository implements UserRepository {
   @Override
   public User findById(String id) {
     return users.get(id);
+  }
+
+  @Override
+  public List<User> findAll() {
+    return List.copyOf(users.values());
   }
 }

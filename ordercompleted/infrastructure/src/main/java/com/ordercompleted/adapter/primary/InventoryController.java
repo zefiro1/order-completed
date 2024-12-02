@@ -22,6 +22,10 @@ public class InventoryController {
     return manageInventoryUseCase.getLowStockProducts();
   }
 
+  public List<Product> allProducts() {
+    return manageInventoryUseCase.getAllProducts();
+  }
+
   public Product getProductById(String productId) {
     return manageInventoryUseCase.getProductById(productId);
   }

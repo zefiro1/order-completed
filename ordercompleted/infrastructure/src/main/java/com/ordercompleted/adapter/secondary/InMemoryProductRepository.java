@@ -10,10 +10,15 @@ import java.util.Map;
 public class InMemoryProductRepository implements ProductRepository {
   private final Map<String, Product> productDatabase = new HashMap<>();
 
+  public InMemoryProductRepository() {
+    productDatabase.put("1", new Product("1", "PC", 10, 4, 100));
+    productDatabase.put("2", new Product("2", "Laptop", 15, 4, 100));
+  }
+
   @Override
   public void save(Product product) {
     productDatabase.put(product.getId(), product);
-    System.out.printf("Product saved:%s%n", product.getId());
+    System.out.printf("Product %s saved or updated: %s%n", product.getName(), product.getId());
   }
 
   @Override

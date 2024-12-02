@@ -8,7 +8,6 @@ public class SMSNotificationService implements NotificationService {
   public void sendOrderStatusNotification(String userEmail, String orderId, OrderStatus orderStatus) {
     // Simula el envío de un SMS al usuario
     System.out.println("Enviando SMS al número vinculado al correo " + userEmail);
-    System.out.println("Estado de la orden " + orderId + " ha cambiado a: " + orderStatus.name());
   }
 
   @Override

@@ -3,7 +3,9 @@ package com.ordercompleted.adapter.secondary;
 import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.ports.secondary.OrderRepository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class InMemoryOrderRepository implements OrderRepository {
@@ -20,5 +22,10 @@ public class InMemoryOrderRepository implements OrderRepository {
   @Override
   public void delete(Order order) {
     database.remove(order.getId());
+  }
+
+  @Override
+  public List<Order> findAll() {
+    return new ArrayList<>(database.values());
   }
 }

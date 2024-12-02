@@ -8,7 +8,6 @@ public class EmailNotificationService implements NotificationService {
   @Override
   public void sendOrderStatusNotification(String userEmail, String orderId, OrderStatus orderStatus) {
     System.out.println("Enviando correo a " + userEmail);
-    System.out.println("Estado de la orden " + orderId + " ha cambiado a: " + orderStatus.name());
   }
 
   @Override

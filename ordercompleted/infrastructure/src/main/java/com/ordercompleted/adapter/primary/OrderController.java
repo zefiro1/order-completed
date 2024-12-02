@@ -34,8 +34,8 @@ public class OrderController {
   }
 
   // Marcar la orden como pagada
-  public void confirmOrderPayment(String orderId, double amount) {
-    orderServiceUseCase.markOrderAsPaid(orderId,amount);
+  public void confirmOrderPayment(String orderId) {
+    orderServiceUseCase.markOrderAsPaid(orderId);
   }
 
   // Marcar la orden como enviada
@@ -46,5 +46,9 @@ public class OrderController {
   // Marcar la orden como completada
   public void markOrderAsCompleted(String orderId) {
     orderServiceUseCase.markOrderAsCompleted(orderId);
+  }
+
+  public void getOrderTotalAmount(String orderId) {
+    orderServiceUseCase.getOrderTotalAmount(orderId);
   }
 }
