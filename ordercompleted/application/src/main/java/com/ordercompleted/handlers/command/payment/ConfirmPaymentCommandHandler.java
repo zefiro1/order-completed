@@ -9,7 +9,10 @@ import com.ordercompleted.handlers.command.CommandHandler;
 import com.ordercompleted.ports.secondary.NotificationService;
 import com.ordercompleted.ports.secondary.OrderRepository;
 import com.ordercompleted.ports.secondary.UserRepository;
+import com.ordercompleted.services.AuditService;
 import lombok.AllArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 public class ConfirmPaymentCommandHandler implements CommandHandler<ConfirmPaymentCommand> {
@@ -18,6 +21,7 @@ public class ConfirmPaymentCommandHandler implements CommandHandler<ConfirmPayme
   private final NotificationService notificationService;
   private final PaymentDomainService paymentDomainService;
   private final OrderDomainService orderDomainService;
+  private final AuditService auditService;
   @Override
   public void handle(ConfirmPaymentCommand command) {
     Order order = orderRepository.findById(command.getOrderId());
@@ -26,5 +30,6 @@ public class ConfirmPaymentCommandHandler implements CommandHandler<ConfirmPayme
     orderRepository.save(order);
     User user = userRepository.findById(order.getCustomerId());
     notificationService.sendOrderStatusNotification(user.getEmail(), order.getId(), OrderStatus.PAID);
+    auditService.log("Payment Confirmed", order.getCustomerId(), "Order ID: " + order.getId() + ", Amount: " + order.getTotalAmount(), LocalDateTime.now());
   }
 }

@@ -1,16 +1,21 @@
 package com.ordercompleted.adapter.primary;
 
 import com.ordercompleted.ports.primary.OrderServiceUseCase;
+import com.ordercompleted.services.AuditService;
 import lombok.AllArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 public class OrderController {
 
   private final OrderServiceUseCase orderServiceUseCase;
+  private final AuditService auditService;
 
   // Crear una orden
   public void createOrder(String orderId, String userId) {
     orderServiceUseCase.createOrder(orderId, userId);
+    auditService.log("Order Created", userId, "Order ID: %s".formatted(orderId), LocalDateTime.now());
   }
 
   // Agregar un artículo a la orden
@@ -31,6 +36,7 @@ public class OrderController {
   // Cancelar la orden
   public void cancelOrder(String orderId) {
     orderServiceUseCase.cancelOrder(orderId);
+    auditService.log("Order Canceled", "User", "Order ID: %s".formatted(orderId), LocalDateTime.now());
   }
 
   // Marcar la orden como pagada

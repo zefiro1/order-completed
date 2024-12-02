@@ -20,6 +20,7 @@ public class OrderService implements OrderServiceUseCase {
 
   private final CommandQueryBus commandQueryBus;
   private final OrderDomainService orderDomainService;
+  private final AuditService auditService;
 
   @Override
   public void createOrder(String orderId, String userId) {
@@ -55,7 +56,8 @@ public class OrderService implements OrderServiceUseCase {
   public void markOrderAsPaid(String orderId) {
     ConfirmPaymentCommand command = new ConfirmPaymentCommand(orderId);
     commandQueryBus.dispatchCommand(command,
-        new ConfirmPaymentCommandHandler(orderRepository, userRepository, notificationService, new PaymentDomainService(paymentProvider), orderDomainService));
+        new ConfirmPaymentCommandHandler(orderRepository, userRepository, notificationService, new PaymentDomainService(paymentProvider), orderDomainService,
+            auditService));
   }
 
   @Override

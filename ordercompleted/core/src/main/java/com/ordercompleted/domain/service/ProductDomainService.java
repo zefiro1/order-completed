@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 public class ProductDomainService {
   private final ProductRepository productRepository;
   private final NotificationService notificationService;
-
   public void reduceStock(String productId, int quantity) {
     Product product = productRepository.findById(productId);
 

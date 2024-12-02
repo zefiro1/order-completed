@@ -9,10 +9,7 @@ import com.ordercompleted.domain.model.Order;
 import com.ordercompleted.domain.model.Role;
 import com.ordercompleted.domain.service.OrderDomainService;
 import com.ordercompleted.domain.service.ProductDomainService;
-import com.ordercompleted.services.OrderService;
-import com.ordercompleted.services.ReportService;
-import com.ordercompleted.services.TaxService;
-import com.ordercompleted.services.UserService;
+import com.ordercompleted.services.*;
 
 import java.util.List;
 
@@ -35,13 +32,14 @@ public class Main {
     CompositeNotificationService compositeNotificationService = new CompositeNotificationService(List.of(emailNotificationService, smsNotificationService));
     InMemoryProductRepository productRepository = new InMemoryProductRepository();
     ProductDomainService productDomainService = new ProductDomainService(productRepository, compositeNotificationService);
-    InMemoryInventoryService inventoryService = new InMemoryInventoryService(productRepository, productDomainService);
+    AuditService auditService = new AuditService();
+    InMemoryInventoryService inventoryService = new InMemoryInventoryService(productRepository, productDomainService, auditService);
     OrderDomainService orderDomainService = new OrderDomainService(inventoryService, productRepository);
     OrderService orderService = new OrderService(orderRepository, userRepository, orderCompletedEvent, paymentProvider, compositeNotificationService,
-        commandQueryBus, orderDomainService);
+        commandQueryBus, orderDomainService, auditService);
 
     System.out.println("Creando órdenes...");
-    OrderController orderController = new OrderController(orderService);
+    OrderController orderController = new OrderController(orderService, auditService);
     orderController.createOrder("1", "1");
     orderController.addItemToOrder("1", "1", 1);
     orderController.addItemToOrder("1", "2", 1);
@@ -62,7 +60,6 @@ public class Main {
     System.out.printf("Canceled Orders: %s%n", reportController.getCancelledOrdersCount());
     System.out.printf("Top Selling Products: %s%n", reportController.getTopSellingProducts());
     System.out.printf("Frequent Customers: %s%n", reportController.getFrequentCustomers());
-
   }
 
 }
