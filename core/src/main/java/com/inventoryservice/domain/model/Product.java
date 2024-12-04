@@ -1,4 +1,4 @@
-package com.ordercompleted.domain.model;
+package com.inventoryservice.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

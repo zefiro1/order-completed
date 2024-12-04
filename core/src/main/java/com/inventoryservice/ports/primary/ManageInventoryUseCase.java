@@ -1,6 +1,7 @@
-package com.ordercompleted.ports.primary;
+package com.inventoryservice.ports.primary;
 
-import com.ordercompleted.domain.model.Product;
+
+import com.inventoryservice.domain.model.Product;
 
 import java.util.List;
 

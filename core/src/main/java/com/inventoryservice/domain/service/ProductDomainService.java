@@ -1,8 +1,8 @@
-package com.ordercompleted.domain.service;
+package com.inventoryservice.domain.service;
 
-import com.ordercompleted.domain.model.Product;
-import com.ordercompleted.ports.secondary.NotificationService;
-import com.ordercompleted.ports.secondary.ProductRepository;
+import com.inventoryservice.domain.model.Product;
+import com.inventoryservice.ports.secondary.NotificationService;
+import com.inventoryservice.ports.secondary.ProductRepository;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
