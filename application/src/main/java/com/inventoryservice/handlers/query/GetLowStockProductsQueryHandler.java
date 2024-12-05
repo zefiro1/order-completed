@@ -8,11 +8,11 @@ import java.util.List;
 
 @AllArgsConstructor
 public class GetLowStockProductsQueryHandler implements QueryHandler<GetLowStockProductsQuery, List<Product>> {
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  @Override
-  public List<Product> handle(GetLowStockProductsQuery query) {
-    return productRepository.findAll().stream().filter(Product::isLowStock).toList();
+    @Override
+    public List<Product> handle(GetLowStockProductsQuery query) {
+        return productRepository.findAll().stream().filter(Product::isLowStock).toList();
 
-  }
+    }
 }

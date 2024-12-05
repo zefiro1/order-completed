@@ -6,10 +6,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class GetProductQueryHandler implements QueryHandler<GetProductQuery, Product> {
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  @Override
-  public Product handle(GetProductQuery query) {
-    return productRepository.findById(query.getProductId());
-  }
+    @Override
+    public Product handle(GetProductQuery query) {
+        return productRepository.findById(query.getProductId());
+    }
 }

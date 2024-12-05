@@ -6,5 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class GetProductQuery {
-  private final String productId;
+    private final String productId;
 }
