@@ -6,5 +6,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class DeleteProductCommand {
-  private final String productId;
+    private final String productId;
 }
