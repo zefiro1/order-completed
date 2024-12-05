@@ -1,4 +1,4 @@
-package com.ordercompleted.ports.primary;
+package com.orderservice.ports.primary;
 
 public interface OrderServiceUseCase {
 

@@ -1,11 +1,4 @@
-package com.ordercompleted.domain.event;
+package com.orderservice.domain.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@Getter
-@AllArgsConstructor
-public class OrderCompletedEvent {
-  private final String orderId;
-
+public record OrderCompletedEvent(String orderId) {
 }

@@ -1,6 +1,7 @@
-package com.ordercompleted.ports.secondary;
+package com.orderservice.ports.secondary;
 
-import com.ordercompleted.domain.model.Order;
+
+import com.orderservice.domain.model.Order;
 
 import java.util.List;
 

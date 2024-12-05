@@ -1,6 +1,7 @@
-package com.ordercompleted.ports.secondary;
+package com.orderservice.ports.secondary;
 
-import com.ordercompleted.domain.event.OrderCompletedEvent;
+
+import com.orderservice.domain.event.OrderCompletedEvent;
 
 public interface OrderEventPublisher {
   void publish(OrderCompletedEvent event);
