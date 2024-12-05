@@ -7,10 +7,10 @@ import java.util.List;
 
 @AllArgsConstructor
 public class CompositeNotificationService implements NotificationService {
-  private final List<NotificationService> notificationServices;
+    private final List<NotificationService> notificationServices;
 
-  @Override
-  public void sendInventoryAlert(String adminEmail, String productId, int stock) {
-    notificationServices.forEach(notificationService -> notificationService.sendInventoryAlert(adminEmail, productId, stock));
-  }
+    @Override
+    public void sendInventoryAlert(String adminEmail, String productId, int stock) {
+        notificationServices.forEach(notificationService -> notificationService.sendInventoryAlert(adminEmail, productId, stock));
+    }
 }
