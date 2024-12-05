@@ -5,10 +5,10 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class AddProductCommandHandler implements CommandHandler<AddProductCommand> {
-  private final ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-  @Override
-  public void handle(AddProductCommand command) {
-    productRepository.save(command.getProduct());
-  }
+    @Override
+    public void handle(AddProductCommand command) {
+        productRepository.save(command.getProduct());
+    }
 }

@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class AddProductCommand {
-  private final Product product;
+    private final Product product;
 }
