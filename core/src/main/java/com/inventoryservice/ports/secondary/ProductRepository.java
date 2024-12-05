@@ -6,11 +6,11 @@ import com.inventoryservice.domain.model.Product;
 import java.util.List;
 
 public interface ProductRepository {
-  void save(Product product);
+    void save(Product product);
 
-  Product findById(String productId);
+    Product findById(String productId);
 
-  List<Product> findAll();
+    List<Product> findAll();
 
-  void delete(String productId);
+    void delete(String productId);
 }
