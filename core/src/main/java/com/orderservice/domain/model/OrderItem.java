@@ -7,7 +7,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 public class OrderItem {
-  private String productId;
-  @Setter
-  private int quantity;
+    private String productId;
+    @Setter
+    private int quantity;
 }
