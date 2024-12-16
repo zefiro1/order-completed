@@ -15,7 +15,6 @@ public class Order {
     private OrderStatus status;
     @Setter
     private double totalAmount;
-
     public Order(String id, String customerId) {
         this.id = id;
         this.customerId = customerId;
