@@ -13,8 +13,8 @@ public class CreateOrderCommandHandler implements CommandHandler<CreateOrderComm
     @Override
     public void handle(CreateOrderCommand command) {
         Order order = new Order(command.orderId(), command.userId());
-        //double totalAmount = orderDomainService.calculateTotalAmount(order);
-        //order.setTotalAmount(totalAmount);
+        double totalAmount = orderDomainService.calculateTotalAmount(order);
+        order.setTotalAmount(totalAmount);
         orderRepository.save(order);
 
     }

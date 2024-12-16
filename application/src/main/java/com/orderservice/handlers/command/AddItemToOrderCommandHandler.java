@@ -14,8 +14,8 @@ public class AddItemToOrderCommandHandler implements CommandHandler<AddItemToOrd
     public void handle(AddItemToOrderCommand command) {
         Order order = orderRepository.findById(command.orderId());
         order.addItem(command.productId(), command.quantity());
-        //double totalAmount = orderDomainService.calculateTotalAmount(order);
-        //order.setTotalAmount(totalAmount);
+        double totalAmount = orderDomainService.calculateTotalAmount(order);
+        order.setTotalAmount(totalAmount);
         orderRepository.save(order);
     }
 }
