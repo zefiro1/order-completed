@@ -1,4 +1,7 @@
 package com.inventoryservice.domain.event;
 
-public record ProductResponseMessage() {
+import lombok.Builder;
+
+@Builder
+public record ProductResponseMessage(String productId, double price) {
 }

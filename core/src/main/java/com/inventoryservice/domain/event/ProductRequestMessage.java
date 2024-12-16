@@ -1,4 +1,10 @@
 package com.inventoryservice.domain.event;
 
-public record ProductRequestMessage() {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
+public class ProductRequestMessage{
+   private String productId;
 }
